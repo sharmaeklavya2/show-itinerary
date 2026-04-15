@@ -1,0 +1,18 @@
+[{
+    "type": "flight",
+    "carrier": "AI",
+    "number": "126",
+    "vehicle": "Boeing 777-300ER",
+    "from": {
+        "where": "ORD",
+        "point": "Terminal 5",
+        "when": "2026-08-26 13:10",
+        "timezone": "America/Chicago"
+    },
+    "to": {
+        "where": "DEL",
+        "point": "Terminal 3",
+        "when": "2026-08-27 16:00",
+        "timezone": "Asia/Kolkata"
+    }
+}]

@@ -1,0 +1,46 @@
+[
+{
+    "type": "flight",
+    "carrier": "JL",
+    "number": "0030",
+    "from": {
+        "where": "DEL",
+        "point": "Terminal 3",
+        "when": "2026-04-17 19:05"
+    },
+    "to": {
+        "where": "HND",
+        "point": "Terminal 3",
+        "when": "2026-04-18 06:20"
+    }
+},
+{
+    "type": "flight",
+    "carrier": "JL",
+    "number": "0010",
+    "from": {
+        "where": "HND",
+        "point": "Terminal 3",
+        "when": "2026-04-18 13:00"
+    },
+    "to": {
+        "where": "ORD",
+        "point": "Terminal 5",
+        "when": "2026-04-18 10:45"
+    }
+},
+{
+    "type": "bus",
+    "carrier": "Reindeer Shuttle",
+    "from": {
+        "where": "ORD",
+        "point": "MMF",
+        "when": "2026-04-18 13:00"
+    },
+    "to": {
+        "where": "Purdue",
+        "when": "2026-04-18 17:30",
+        "timezone": "US/Eastern"
+    }
+}
+]
