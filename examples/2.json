@@ -3,6 +3,11 @@
     "type": "flight",
     "carrier": "JL",
     "number": "0030",
+    "bookingInfo": {
+        "number": "XXXXXX",
+        "price": "₹192,000",
+        "type": "Economy Flex"
+    },
     "from": {
         "where": "DEL",
         "point": "Terminal 3",
@@ -18,6 +23,9 @@
     "type": "flight",
     "carrier": "JL",
     "number": "0010",
+    "bookingInfo": {
+        "number": "XXXXXX"
+    },
     "from": {
         "where": "HND",
         "point": "Terminal 3",
@@ -32,6 +40,10 @@
 {
     "type": "bus",
     "carrier": "Reindeer Shuttle",
+    "bookingInfo": {
+        "number": "YYYYYYY",
+        "price": "$65"
+    },
     "from": {
         "where": "ORD",
         "point": "MMF",

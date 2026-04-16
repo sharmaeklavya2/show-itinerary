@@ -16,6 +16,7 @@ export interface Ride {
     to: LocTime;
     duration?: string;
     trackUrl?: string;
+    bookingInfo?: Record<string, string>;
 }
 
 type Trip = Ride[];

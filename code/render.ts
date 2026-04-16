@@ -50,21 +50,29 @@ export default function renderTrip(trip: Trip): Element {
 
         if(!isLayover) {
             const header = getElem('div', {parent: rideElem, classes: ['ride-head']});
+            const headLeft = getElem('div', {parent: header, classes: ['ride-head-left']});
+            const headRight = getElem('div', {parent: header, classes: ['ride-head-right']});
             if(STD_RIDE_TYPES.has(ride.type)) {
-                getElem('div', {parent: header, classes: ['ride-type', 'ride-type-' + ride.type]});
+                getElem('div', {parent: headLeft, classes: ['ride-type', 'ride-type-' + ride.type]});
             }
             else {
-                getElem('div', {parent: header, text: ride.type, classes: ['ride-type']});
+                getElem('div', {parent: headLeft, text: ride.type, classes: ['ride-type']});
             }
             if(ride.carrier !== undefined) {
-                getElem('div', {parent: header, text: ride.carrier, classes: ['ride-carrier']});
+                getElem('div', {parent: headLeft, text: ride.carrier, classes: ['ride-carrier']});
             }
             if(ride.number !== undefined) {
-                getElem('div', {parent: header, text: ride.number, classes: ['ride-number']});
+                getElem('div', {parent: headLeft, text: ride.number, classes: ['ride-number']});
             }
             if(ride.trackUrl !== undefined) {
-                getElem('a', {parent: header, text: '[track]', classes: ['ride-track-url'],
+                getElem('a', {parent: headLeft, text: '[track]', classes: ['ride-track-url'],
                     'attrs': {'href': ride.trackUrl, 'target': '_blank', 'rel': 'noopener noreferrer'}});
+            }
+
+            if(ride.bookingInfo !== undefined) {
+                for(const [_, v] of Object.entries(ride.bookingInfo)) {
+                    getElem('div', {parent: headRight, text: v});
+                }
             }
         }
 

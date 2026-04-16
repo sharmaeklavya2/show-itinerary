@@ -167,14 +167,20 @@ main {
 .ride {
     background-color: var(--medium-tint);
 }
-.ride-head {
+.ride-head, .ride-head-left, .ride-head-right {
     display: flex;
     flex-direction: row;
-    justify-content: start;
-    padding: var(--inner-margin);
-    border-bottom: 1px solid var(--heavy-tint);
+    flex-wrap: wrap;
 }
-.ride-type, .ride-carrier, .ride-number, .ride-track-url {
+.ride-head {
+    justify-content: space-between;
+    border-bottom: 1px solid var(--heavy-tint);
+    padding: var(--inner-margin);
+}
+.ride-head-left, .ride-head-right {
+    justify-content: start;
+}
+.ride-head-left > *, .ride-head-right > * {
     display: flex;
     align-items: center;
     justify-content: center;
