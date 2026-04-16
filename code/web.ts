@@ -48,23 +48,22 @@ function logError(e: unknown): void {
 
 //=[ Conversion to DOM ]========================================================
 
-function toggleVisibility(): void {
+function displayTrip(trip: Trip): void {
     const mainElem = document.getElementById('main')!;
     const dropTargetElem = document.getElementById('drop-target')!;
     const ppJsonWrapper = document.getElementById('pp-json-wrapper')!;
-    mainElem.classList.remove('hidden');
-    dropTargetElem.classList.add('hidden');
-    ppJsonWrapper.classList.remove('hidden');
-}
-
-function displayTrip(trip: Trip): void {
-    toggleVisibility();
-    processTrip(trip);
     const ppJsonElem = document.getElementById('pp-json')!;
+    const gasElem = document.getElementById('gas')!;
+
+    mainElem.classList.remove('hidden');
+    dropTargetElem.classList.remove('prominent');
+    ppJsonWrapper.classList.remove('hidden');
+    gasElem.classList.add('prominent');
+
+    processTrip(trip);
     ppJsonElem.textContent = JSON.stringify(trip, undefined, 2);
-    const mainElem = document.getElementById('main')!;
     const tripElem = renderTrip(trip);
-    mainElem.appendChild(tripElem);
+    mainElem.replaceChildren(tripElem);
 }
 
 //=[ File IO ]==================================================================
@@ -137,6 +136,7 @@ function setupFileLoaders(): void {
 function main(): void {
     const dropTargetElem = document.getElementById('drop-target')!;
     dropTargetElem.classList.remove('hidden');
+    dropTargetElem.classList.add('prominent');
     setupFileLoaders();
 }
 

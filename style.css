@@ -73,6 +73,9 @@ body {
     padding: var(--outer-margin);
     flex: 1;
 }
+.prominent {
+    flex: 1;
+}
 #drop-target, noscript, body > footer, #pp-json {
     margin: var(--outer-margin);
 }
@@ -84,7 +87,6 @@ body {
     color: var(--dim-color);
 }
 #drop-target {
-    flex: 1;
     cursor: pointer;
     box-sizing: border-box;
     border: 2px dashed currentColor;
