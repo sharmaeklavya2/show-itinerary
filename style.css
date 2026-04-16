@@ -206,3 +206,24 @@ details > summary {
     font-size: 0.9em;
     color: var(--dim-color);
 }
+.ride-type::before {
+    font-size: 1.2em;
+}
+.ride-type-flight::before {
+    content: "✈️";
+}
+.ride-type-bus::before {
+    content: "🚍";
+}
+.ride-type-train::before {
+    content: "🚆";
+}
+.ride-type-metro::before {
+    content: "🚇";
+}
+.ride-type-car::before {
+    content: "🚘";
+}
+.ride-type-taxi::before {
+    content: "🚖";
+}
