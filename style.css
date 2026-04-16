@@ -165,7 +165,7 @@ details > summary {
     padding: var(--inner-margin);
     border-bottom: 1px solid var(--heavy-tint);
 }
-.ride-type, .ride-carrier, .ride-number {
+.ride-type, .ride-carrier, .ride-number, .ride-track-url {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -201,6 +201,8 @@ details > summary {
 .layover .ride-dur::after {
     transform: rotate(90deg);
 }
+
+/* trip styling */
 .loctime-where {
     font-size: 1.2em;
 }
@@ -228,4 +230,7 @@ details > summary {
 }
 .ride-type-taxi::before {
     content: "🚖";
+}
+.ride-track-url, .ride-track-url:visited {
+    color: var(--dim-color);
 }

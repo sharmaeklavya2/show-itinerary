@@ -15,6 +15,7 @@ export interface Ride {
     from: LocTime;
     to: LocTime;
     duration?: string;
+    trackUrl?: string;
 }
 
 type Trip = Ride[];

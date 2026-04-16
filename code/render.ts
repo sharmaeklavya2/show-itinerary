@@ -62,6 +62,10 @@ export default function renderTrip(trip: Trip): Element {
             if(ride.number !== undefined) {
                 getElem('div', {parent: header, text: ride.number, classes: ['ride-number']});
             }
+            if(ride.trackUrl !== undefined) {
+                getElem('a', {parent: header, text: '[track]', classes: ['ride-track-url'],
+                    'attrs': {'href': ride.trackUrl, 'target': '_blank', 'rel': 'noopener noreferrer'}});
+            }
         }
 
         const body = getElem('div', {parent: rideElem, classes: ['ride-body']});

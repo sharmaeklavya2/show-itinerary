@@ -97,7 +97,19 @@ function inferTzForTrip(trip: Trip): void {
     }
 }
 
+function getTrackingUrls(trip: Trip): void {
+    for(const ride of trip) {
+        if(ride.type === 'flight' && ride.carrier !== undefined && ride.number !== undefined) {
+            const [date, _] = ride.from.when.split(' ');
+            const [year, month, day] = date.split('-');
+            ride.trackUrl = ('https://www.flightstats.com/v2/flight-tracker/'
+                + `${ride.carrier}/${ride.number}?year=${year}&month=${month}&date=${day}`);
+        }
+    }
+}
+
 export default function processTrip(trip: Trip): void {
     inferTzForTrip(trip);
+    getTrackingUrls(trip);
     computeDurations(trip);
 }
