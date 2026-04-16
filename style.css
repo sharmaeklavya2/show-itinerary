@@ -148,11 +148,15 @@ details > summary {
 }
 
 /* endoskeleton */
+main {
+    margin: var(--outer-margin);
+}
 .trip {
     display: flex;
     flex-direction: column;
+    max-width: 40em;
+    margin: 0 auto;
     align-items: stretch;
-    margin: var(--outer-margin);
 }
 .ride, .layover {
     display: flex;
