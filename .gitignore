@@ -10,6 +10,7 @@ __pycache__
 /deploy
 /cache
 airports.json
+airlines.json
 .env
 
 # Trash
