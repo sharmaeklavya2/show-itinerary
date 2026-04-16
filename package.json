@@ -1,0 +1,12 @@
+{
+  "name": "show-itinerary",
+  "version": "0.1.0",
+  "description": "Show Itinerary",
+  "type": "module",
+  "scripts": {
+    "build": "npx tsc && python makeDbs.py",
+    "clean": "rm -f cpigjs/*.js cpigjs/*.js.map"
+  },
+  "author": "Eklavya Sharma",
+  "license": "MIT"
+}

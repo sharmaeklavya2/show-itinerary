@@ -5,9 +5,8 @@ This is a web app that takes a trip/journey in JSON and displays it as HTML.
 ## Setup
 
 1.  Install typescript: `npm install -g typescript`.
-2.  Build the `airports.json` and `airlines.json` databases: `python makeDbs.py`.
-3.  Compile the typescript code: `npx tsc`.
-4.  Serve this repository via a static HTTP server.
+2.  Build assets: `npm run build`.
+3.  Serve this repository via a static HTTP server.
 
 ## How to run
 
