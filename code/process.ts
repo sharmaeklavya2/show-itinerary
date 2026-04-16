@@ -17,7 +17,13 @@ function durationToStr(d: Temporal.Duration): string {
     d = d.round({'largestUnit': 'days', 'smallestUnit': 'minutes'});
     const hh = String(d.hours).padStart(2, '0');
     const mm = String(d.minutes).padStart(2, '0');
-    const dayStr = (d.days > 0) ? (String(d.days) + ' days, ') : '';
+    let dayStr = '';
+    if(d.days > 1) {
+        dayStr = String(d.days) + ' days, ';
+    }
+    else if(d.days === 1) {
+        dayStr = '1 day, ';
+    }
     return `${dayStr}${hh}:${mm}`;
 }
 
