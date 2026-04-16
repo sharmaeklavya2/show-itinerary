@@ -135,6 +135,8 @@ function setupFileLoaders(): void {
 //=[ main ]=====================================================================
 
 function main(): void {
+    const dropTargetElem = document.getElementById('drop-target')!;
+    dropTargetElem.classList.remove('hidden');
     setupFileLoaders();
 }
 
