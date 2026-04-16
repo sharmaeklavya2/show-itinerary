@@ -91,6 +91,11 @@ body {
     box-sizing: border-box;
     border: 2px dashed currentColor;
 }
+@media print {
+    #drop-target, #pp-json-wrapper {
+        display: none;
+    }
+}
 
 details {
     border: 1px solid var(--dim-color);
