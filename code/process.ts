@@ -32,6 +32,7 @@ function locTimeDt(locTime: LocTime): Temporal.ZonedDateTime {
     locTime.date = zdt.toPlainDate().toLocaleString('en-GB',
         {day: "numeric", month: "short", year: "numeric", weekday: "short"});
     locTime.time = timeToStr(zdt.toPlainTime());
+    locTime.stdTime = zdt.toString();
     return zdt;
 }
 

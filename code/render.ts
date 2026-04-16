@@ -31,7 +31,11 @@ function renderLocTime(locTime: LocTime, parent: Element): Element {
         getElem('div', {parent: locElem, text: locTime.point, classes: ['loctime-point']});
     }
     getElem('div', {parent: locElem, text: locTime.date, classes: ['loctime-date']});
-    getElem('div', {parent: locElem, text: locTime.time, classes: ['loctime-time']});
+    const timeElem = getElem('time', {parent: locElem, text: locTime.time, classes: ['loctime-time']});
+    if(locTime.stdTime !== undefined) {
+        timeElem.setAttribute('datetime', locTime.stdTime);
+        timeElem.setAttribute('title', locTime.stdTime);
+    }
     return locElem;
 }
 

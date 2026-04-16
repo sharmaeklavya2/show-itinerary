@@ -5,6 +5,7 @@ export interface LocTime {
     timezone?: string;
     date?: string;
     time?: string;
+    stdTime?: string;
 }
 
 export interface Ride {
