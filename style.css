@@ -218,6 +218,9 @@ main {
 }
 
 /* trip styling */
+.loctime-where, .loctime-point, .loctime-date, .loctime-time {
+    text-align: center;
+}
 .loctime-where {
     font-size: 1.2em;
 }
