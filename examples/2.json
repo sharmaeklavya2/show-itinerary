@@ -39,8 +39,7 @@
     },
     "to": {
         "where": "Purdue",
-        "when": "2026-04-18 17:30",
-        "timezone": "US/Eastern"
+        "when": "2026-04-18 17:30"
     }
 }
 ]
