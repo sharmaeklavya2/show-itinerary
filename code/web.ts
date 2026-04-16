@@ -1,7 +1,6 @@
 import type {Trip} from "./types";
 import processTrip from "./process.js";
-
-//=[ Interfaces and global variables ]==========================================
+import renderTrip from "./render.js";
 
 //=[ Error reporting ]==========================================================
 
@@ -52,10 +51,10 @@ function logError(e: unknown): void {
 function toggleVisibility(): void {
     const mainElem = document.getElementById('main')!;
     const dropTargetElem = document.getElementById('drop-target')!;
-    const ppJsonElem = document.getElementById('pp-json')!;
+    const ppJsonWrapper = document.getElementById('pp-json-wrapper')!;
     mainElem.classList.remove('hidden');
     dropTargetElem.classList.add('hidden');
-    ppJsonElem.classList.remove('hidden');
+    ppJsonWrapper.classList.remove('hidden');
 }
 
 function displayTrip(trip: Trip): void {
@@ -63,6 +62,9 @@ function displayTrip(trip: Trip): void {
     processTrip(trip);
     const ppJsonElem = document.getElementById('pp-json')!;
     ppJsonElem.textContent = JSON.stringify(trip, undefined, 2);
+    const mainElem = document.getElementById('main')!;
+    const tripElem = renderTrip(trip);
+    mainElem.appendChild(tripElem);
 }
 
 //=[ File IO ]==================================================================

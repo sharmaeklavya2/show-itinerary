@@ -3,6 +3,8 @@ export interface LocTime {
     when: string;
     point?: string;
     timezone?: string;
+    date?: string;
+    time?: string;
 }
 
 export interface Ride {
