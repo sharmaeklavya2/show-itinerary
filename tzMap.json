@@ -1,5 +1,13 @@
 {
 "West Lafayette": "US/Eastern",
+"Lafayette": "US/Eastern",
 "Purdue": "US/Eastern",
-"Gurugram": "Asia/Kolkata"
+"Urbana": "US/Central",
+"Champaign": "US/Central",
+"Matteson": "US/Central",
+"Chicago": "US/Central",
+"Delhi": "Asia/Kolkata",
+"Gurugram": "Asia/Kolkata",
+"Hyderabad": "Asia/Kolkata",
+"Bangalore": "Asia/Kolkata"
 }
