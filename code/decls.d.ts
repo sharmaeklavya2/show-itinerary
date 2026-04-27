@@ -52,3 +52,7 @@ declare module "places.json" {
     const places: PlaceInfo[];
     export default places;
 }
+declare module "countries.json" {
+    const countries: PlaceInfo[];
+    export default countries;
+}

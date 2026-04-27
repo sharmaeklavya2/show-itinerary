@@ -79,7 +79,10 @@ export default function renderTrip(trip: Trip): Element {
             const header = getElem('div', {parent: rideElem, classes: ['ride-head']});
             const headLeft = getElem('div', {parent: header, classes: ['ride-head-left']});
             const headRight = getElem('div', {parent: header, classes: ['ride-head-right']});
-            if(STD_RIDE_TYPES.has(ride.type)) {
+            if(ride.type === undefined) {
+                getElem('div', {parent: headLeft, classes: ['ride-type']});
+            }
+            else if(STD_RIDE_TYPES.has(ride.type)) {
                 getElem('div', {parent: headLeft, classes: ['ride-type', 'ride-type-' + ride.type]});
             }
             else {

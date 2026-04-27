@@ -1,36 +1,37 @@
 import airports from "airports.json" with { type: "json" };
 import places from "places.json" with { type: "json" };
+import countries from "countries.json" with { type: "json" };
 
 const iataToAirportInfo = new Map<string, AirportInfo>(airports.map(x => [x.iata, x]));
 
 const placeMap = new Map<string, PlaceInfo>();
 
-function addSubsets<T>(x: (T | undefined)[], start: number, prefix: T[], output: T[][]): void {
-    if(x.length === start) {
-        output.push(Array.from(prefix));
-    }
-    else {
-        addSubsets(x, start+1, prefix, output);
-        if(x[start] !== undefined) {
-            prefix.push(x[start]);
-            addSubsets(x, start+1, prefix, output);
-            prefix.pop();
-        }
-    }
-}
-
-function subsets<T>(x: (T | undefined)[]): T[][] {
-    const output: T[][] = [];
-    addSubsets(x, 0, [], output);
-    return output;
+function notUndef<T>(x: T | undefined): boolean {
+    return x !== undefined;
 }
 
 function fillPlaceMap(): void {
     for(const placeInfo of places) {
-        const parts = [placeInfo.city, placeInfo.state, placeInfo.country];
-        for(const parts2 of subsets(parts)) {
-            placeMap.getOrInsert(parts2.join(', '), placeInfo);
+        if(placeInfo.city !== undefined) {
+            if(placeInfo.state !== undefined) {
+                placeMap.getOrInsert([placeInfo.city, placeInfo.state, placeInfo.country].join(', '), placeInfo);
+                placeMap.getOrInsert([placeInfo.city, placeInfo.state].join(', '), placeInfo);
+            }
+            placeMap.getOrInsert([placeInfo.city, placeInfo.country].join(', '), placeInfo);
+            placeMap.getOrInsert(placeInfo.city, placeInfo);
         }
+        else if(placeInfo.state !== undefined) {
+            const stateInfo = {'state': placeInfo.state, 'country': placeInfo.country, 'tz': placeInfo.tz};
+            placeMap.getOrInsert([placeInfo.state, placeInfo.country].join(', '), stateInfo);
+            placeMap.getOrInsert(placeInfo.state, stateInfo);
+        }
+    }
+    for(const country of countries) {
+        if(country.city !== undefined) {
+            placeMap.getOrInsert([country.city, country.country].join(', '), country);
+            placeMap.getOrInsert(country.city, country);
+        }
+        placeMap.getOrInsert(country.country, {'country': country.country, 'tz': country.tz});
     }
 }
 fillPlaceMap();
@@ -109,10 +110,6 @@ function computeDurations(trip: Trip): void {
     }
 }
 
-function notUndef<T>(x: T | undefined): boolean {
-    return x !== undefined;
-}
-
 function processLoc(locTime: LocTime): void {
     /* possibilities:
      * air travel: airport code decides tz
@@ -142,27 +139,24 @@ function processLoc(locTime: LocTime): void {
     }
 
     let placeInfo;
-    const parts = [locTime.city, locTime.state, locTime.country].filter(x => x !== undefined);
-    if(parts.length > 0) {
-        for(let i=0; i < parts.length; ++i) {
-            const key = parts.slice(i, parts.length).join(', ');
-            placeInfo = placeMap.get(key);
-            if(placeInfo !== undefined) {
-                break;
-            }
-        }
+    const parts = [locTime.city, locTime.state, locTime.country].filter(notUndef);
+    for(let i=0; i < parts.length; ++i) {
+        const key = parts.slice(i, parts.length).join(', ');
+        placeInfo = placeMap.get(key);
     }
-    else if(locTime.where !== undefined) {
+    if(placeInfo === undefined && locTime.where !== undefined) {
         placeInfo = placeMap.get(locTime.where);
     }
     if(placeInfo !== undefined) {
-        if(placeInfo.city !== undefined) {
+        if(placeInfo.city !== undefined && locTime.city === undefined) {
             locTime.city = placeInfo.city;
         }
-        if(placeInfo.state !== undefined) {
+        if(placeInfo.state !== undefined && locTime.state === undefined) {
             locTime.state = placeInfo.state;
         }
-        locTime.country = placeInfo.country;
+        if(locTime.country === undefined) {
+            locTime.country = placeInfo.country;
+        }
     }
 
     // Set TZ
