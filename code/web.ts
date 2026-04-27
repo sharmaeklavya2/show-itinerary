@@ -1,4 +1,3 @@
-import type {Trip} from "./types";
 import processTrip from "./process.js";
 import renderTrip from "./render.js";
 

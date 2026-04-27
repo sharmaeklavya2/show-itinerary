@@ -1,0 +1,71 @@
+[
+{
+    "type": "bus",
+    "carrier": "Peoria",
+    "number": "0700",
+    "bookingInfo": {
+        "number": "#XXXXXX",
+        "price": "$46"
+    },
+    "from": {
+        "where": "Urbana",
+        "point": "ISR",
+        "when": "2026-04-29 07:20"
+    },
+    "to": {
+        "where": "Matteson",
+        "state": "IL",
+        "when": "2026-04-29 09:15"
+    }
+},
+{
+    "type": "taxi",
+    "bookingInfo": {},
+    "from": {
+        "where": "Matteson",
+        "state": "IL",
+        "when": "2026-04-29 09:15"
+    },
+    "to": {
+        "where": "Temple",
+        "point": "10915 Lemont Rd",
+        "city": "Lemont",
+        "state": "IL",
+        "when": "2026-04-29 10:00"
+    }
+},
+{
+    "type": "taxi",
+    "bookingInfo": {},
+    "from": {
+        "where": "Temple",
+        "point": "10915 Lemont Rd",
+        "city": "Lemont",
+        "state": "IL",
+        "when": "2026-04-29 16:45"
+    },
+    "to": {
+        "where": "Chicago",
+        "point": "Union Station",
+        "when": "2026-04-29 17:30"
+    }
+},
+{
+    "type": "train",
+    "carrier": "Amtrak",
+    "number": "59",
+    "bookingInfo": {
+        "number": "XXXXXX",
+        "price": "$27"
+    },
+    "from": {
+        "where": "Chicago",
+        "point": "Union Station",
+        "when": "2026-04-29 18:05"
+    },
+    "to": {
+        "where": "Champaign",
+        "when": "2026-04-29 20:50"
+    }
+}
+]

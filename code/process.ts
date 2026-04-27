@@ -1,8 +1,39 @@
-import type {Trip, Ride, LocTime, AirportInfo} from "./types";
 import airports from "airports.json" with { type: "json" };
-import tzMap from "tzMap.json" with { type: "json" };
+import places from "places.json" with { type: "json" };
 
 const iataToAirportInfo = new Map<string, AirportInfo>(airports.map(x => [x.iata, x]));
+
+const placeMap = new Map<string, PlaceInfo>();
+
+function addSubsets<T>(x: (T | undefined)[], start: number, prefix: T[], output: T[][]): void {
+    if(x.length === start) {
+        output.push(Array.from(prefix));
+    }
+    else {
+        addSubsets(x, start+1, prefix, output);
+        if(x[start] !== undefined) {
+            prefix.push(x[start]);
+            addSubsets(x, start+1, prefix, output);
+            prefix.pop();
+        }
+    }
+}
+
+function subsets<T>(x: (T | undefined)[]): T[][] {
+    const output: T[][] = [];
+    addSubsets(x, 0, [], output);
+    return output;
+}
+
+function fillPlaceMap(): void {
+    for(const placeInfo of places) {
+        const parts = [placeInfo.city, placeInfo.state, placeInfo.country];
+        for(const parts2 of subsets(parts)) {
+            placeMap.getOrInsert(parts2.join(', '), placeInfo);
+        }
+    }
+}
+fillPlaceMap();
 
 function strToZdt(s: string, tz: string): Temporal.ZonedDateTime {
     const [date, time] = s.split(' ');
@@ -78,22 +109,99 @@ function computeDurations(trip: Trip): void {
     }
 }
 
-function inferTzForLocTime(locTime: LocTime): void {
+function notUndef<T>(x: T | undefined): boolean {
+    return x !== undefined;
+}
+
+function processLoc(locTime: LocTime): void {
+    /* possibilities:
+     * air travel: airport code decides tz
+     * travel to/from major city: city decides tz
+     * travel to/from non-major city: state decides tz
+     * travel to/from non-city area (e.g., locality): city/state must be specified, and that decides tz
+     */
+    const origLocTime = JSON.stringify(locTime);
+
+    let airportInfo;
+    if(locTime.airport !== undefined) {
+        airportInfo = iataToAirportInfo.get(locTime.airport);
+    }
+    else if(locTime.where !== undefined) {
+        airportInfo = iataToAirportInfo.get(locTime.where);
+        if(airportInfo !== undefined) {
+            locTime.airport = locTime.where;
+        }
+    }
+    if(airportInfo !== undefined) {
+        if(locTime.city === undefined) {
+            locTime.city = airportInfo.city;
+        }
+        else if(locTime.city !== airportInfo.city) {
+            throw new Error(`city is ${locTime.city}, but airport ${locTime.airport} has city ${airportInfo.city}.`);
+        }
+    }
+
+    let placeInfo;
+    const parts = [locTime.city, locTime.state, locTime.country].filter(x => x !== undefined);
+    if(parts.length > 0) {
+        for(let i=0; i < parts.length; ++i) {
+            const key = parts.slice(i, parts.length).join(', ');
+            placeInfo = placeMap.get(key);
+            if(placeInfo !== undefined) {
+                break;
+            }
+        }
+    }
+    else if(locTime.where !== undefined) {
+        placeInfo = placeMap.get(locTime.where);
+    }
+    if(placeInfo !== undefined) {
+        if(placeInfo.city !== undefined) {
+            locTime.city = placeInfo.city;
+        }
+        if(placeInfo.state !== undefined) {
+            locTime.state = placeInfo.state;
+        }
+        locTime.country = placeInfo.country;
+    }
+
+    // Set TZ
     if(locTime.timezone === undefined) {
-        const airportInfo = iataToAirportInfo.get(locTime.where);
         if(airportInfo !== undefined) {
             locTime.timezone = airportInfo.tz;
         }
-        else {
-            locTime.timezone = tzMap[locTime.where];
+        else if(placeInfo !== undefined) {
+            locTime.timezone = placeInfo.tz;
         }
+        else {
+            throw new Error(`Could not determine timezone for ${origLocTime}.`);
+        }
+    }
+
+    // set loctype
+    if(airportInfo !== undefined) {
+        locTime.locType = 'airport';
+    }
+    else if(placeInfo !== undefined) {
+        if(placeInfo.city !== undefined) {
+            locTime.locType = 'city';
+        }
+        else if(placeInfo.state !== undefined) {
+            locTime.locType = 'state';
+        }
+        else {
+            locTime.locType = 'country';
+        }
+    }
+    else {
+        throw new Error(`No place label for ${origLocTime}.`);
     }
 }
 
-function inferTzForTrip(trip: Trip): void {
+function processLocsInTrip(trip: Trip): void {
     for(const ride of trip) {
-        inferTzForLocTime(ride.from);
-        inferTzForLocTime(ride.to);
+        processLoc(ride.from);
+        processLoc(ride.to);
     }
 }
 
@@ -109,7 +217,7 @@ function getTrackingUrls(trip: Trip): void {
 }
 
 export default function processTrip(trip: Trip): void {
-    inferTzForTrip(trip);
+    processLocsInTrip(trip);
     getTrackingUrls(trip);
     computeDurations(trip);
 }

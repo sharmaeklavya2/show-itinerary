@@ -1,5 +1,3 @@
-import type {Trip, Ride, LocTime} from "./types";
-
 function getElem(tagName: string, options?: {parent?: Element, text?: string,
         attrs?: Record<string, string>, classes?: string[]}): Element {
     const elem = document.createElement(tagName);
@@ -25,10 +23,39 @@ function getElem(tagName: string, options?: {parent?: Element, text?: string,
 }
 
 function renderLocTime(locTime: LocTime, parent: Element): Element {
+    const primary = locTime.where ?? locTime.airport ?? locTime.city;
+    if(primary === undefined) {
+        throw new Error('Missing place label.');
+    }
+    let secParts;
+    if(primary === locTime.airport) {
+        // secParts = [locTime.point, locTime.city, locTime.state, locTime.country].filter(notUndef);
+        secParts = [locTime.point, locTime.city];
+    }
+    else {
+        secParts = [locTime.point];
+        if(locTime.locType === 'city') {
+            if(primary !== locTime.city) {
+                secParts.push(locTime.city);
+            }
+        }
+        else if(locTime.locType === 'state') {
+            secParts.push(locTime.city);
+            secParts.push(locTime.state);
+        }
+        else if(locTime.locType === 'country') {
+            secParts.push(locTime.city);
+            secParts.push(locTime.state);
+            secParts.push(locTime.country);
+        }
+    }
+    const secParts2 = secParts.filter(x => x !== undefined);
+    const secondary = (secParts2.length > 0) ? secParts2.join(', ') : undefined;
+
     const locElem = getElem('div', {parent: parent, classes: ['loctime']});
-    getElem('div', {'parent': locElem, 'text': locTime.where, classes: ['loctime-where']});
-    if(locTime.point !== undefined) {
-        getElem('div', {parent: locElem, text: locTime.point, classes: ['loctime-point']});
+    getElem('div', {parent: locElem, text: primary, classes: ['loctime-where']});
+    if(secondary !== undefined) {
+        getElem('div', {parent: locElem, text: secondary, classes: ['loctime-point']});
     }
     getElem('div', {parent: locElem, text: locTime.date, classes: ['loctime-date']});
     const timeElem = getElem('time', {parent: locElem, text: locTime.time, classes: ['loctime-time']});
