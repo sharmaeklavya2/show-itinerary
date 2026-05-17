@@ -4,7 +4,7 @@ This is a web app that takes a trip/journey in JSON and displays it as HTML.
 
 ## Setup
 
-1.  Install typescript: `npm install -g typescript`.
+1.  Install dependencies: `npm install`.
 2.  Build assets: `npm run build`.
 3.  Serve this repository via a static HTTP server.
 
