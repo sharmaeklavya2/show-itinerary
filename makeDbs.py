@@ -45,7 +45,7 @@ def rewriteAirports() -> None:
             }
             if obj['iata'] != '\\N' and obj['icao'] != '\\N' and obj['tz'] != '\\N':
                 parts.append(json.dumps(obj, ensure_ascii=False))
-    with open('airports.json', 'w') as ofp:
+    with open(pjoin(ROOT_DIR, 'airports.json'), 'w') as ofp:
         ofp.write('[\n')
         ofp.write(',\n'.join(parts))
         ofp.write('\n]\n')
@@ -66,7 +66,7 @@ def rewriteAirlines() -> None:
             if obj['iata'] != '\\N' and obj['iata'] != '-' and obj['active'] == 'Y':
                 del obj['active']
                 parts.append(json.dumps(obj))
-    with open('airlines.json', 'w') as ofp:
+    with open(pjoin(ROOT_DIR, 'airlines.json'), 'w') as ofp:
         ofp.write('[\n')
         ofp.write(',\n'.join(parts))
         ofp.write('\n]\n')
