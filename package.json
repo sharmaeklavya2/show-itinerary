@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "npx tsc && python makeDbs.py",
-    "clean": "rm -f cpigjs/*.js cpigjs/*.js.map"
+    "clean": "rm -f code/*.js code/*.js.map"
   },
   "author": "Eklavya Sharma",
   "license": "MIT",
