@@ -89,13 +89,18 @@ function getFileFromList(files: FileList | null | undefined): File {
 function setupFileLoaders(): void {
     const uploaderElem = document.getElementById('uploader')!;
     uploaderElem.addEventListener('change', function(ev: Event) {
+        const inputElem = ev.currentTarget! as HTMLInputElement;
         try {
-            const files = (ev.currentTarget! as HTMLInputElement).files;
-            const file = getFileFromList(files);
+            const file = getFileFromList(inputElem.files);
             getTripFromFile(file).then(displayTrip).catch(logError);
         }
         catch(e) {
             logError(e);
+        }
+        finally {
+            // Clear the selection so that choosing the same file again fires 'change'.
+            // The File object obtained above stays readable after this.
+            inputElem.value = '';
         }
     });
     document.getElementById('drop-target')!.addEventListener('click', function() {
