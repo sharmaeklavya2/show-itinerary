@@ -1,5 +1,6 @@
 [
 {"city": "Seoul", "country": "Korea", "tz": "Asia/Seoul"},
+{"city": "Kolkata", "state": "WB", "country": "India", "tz": "Asia/Kolkata"},
 {"city": "Colombo", "country": "Sri Lanka", "tz": "Asia/Colombo"},
 {"city": "Karachi", "country": "Pakistan", "tz": "Asia/Karachi"},
 {"city": "Kabul", "country": "Afghanistan", "tz": "Asia/Kabul"},
