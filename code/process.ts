@@ -36,13 +36,40 @@ function fillPlaceMap(): void {
 }
 fillPlaceMap();
 
+const WHEN_REGEX = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/;
+
 function strToZdt(s: string, tz: string): Temporal.ZonedDateTime {
-    const [date, time] = s.split(' ');
-    const [year, month, day] = date.split('-').map(Number);
-    const [hour, minute] = time.split(':').map(Number);
-    return Temporal.ZonedDateTime.from(
-        {'year': year, 'month': month, 'day': day, 'hour': hour, 'minute': minute, timeZone: tz},
-        {'disambiguation': 'reject', 'overflow': 'reject'});
+    if(typeof s !== 'string') {
+        throw new Error('"when" is missing or is not a string.');
+    }
+    const match = WHEN_REGEX.exec(s);
+    if(match === null) {
+        throw new Error(`"when" is "${s}", but it must have format "YYYY-MM-DD HH:MM".`);
+    }
+    const [year, month, day, hour, minute] = match.slice(1).map(Number);
+    let pdt: Temporal.PlainDateTime;
+    try {
+        pdt = Temporal.PlainDateTime.from({year, month, day, hour, minute}, {'overflow': 'reject'});
+    }
+    catch(e) {
+        throw new Error(`"${s}" is not a valid date and time.`, {cause: e});
+    }
+    let zdt: Temporal.ZonedDateTime;
+    try {
+        zdt = pdt.toZonedDateTime(tz, {'disambiguation': 'earlier'});
+    }
+    catch(e) {
+        throw new Error(`"${tz}" is not a valid IANA timezone.`, {cause: e});
+    }
+    if(!zdt.toPlainDateTime().equals(pdt)) {
+        throw new Error(`${s} does not exist in timezone ${tz}, since clocks skip forward at that time`
+            + ' (e.g., when daylight saving time starts).');
+    }
+    if(!zdt.equals(pdt.toZonedDateTime(tz, {'disambiguation': 'later'}))) {
+        throw new Error(`${s} is ambiguous in timezone ${tz}, since clocks go back at that time and it occurs twice`
+            + ' (e.g., when daylight saving time ends).');
+    }
+    return zdt;
 }
 
 function durationToStr(d: Temporal.Duration): string {
