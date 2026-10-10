@@ -15,4 +15,5 @@ This is a web app that takes a trip/journey in JSON and displays it as HTML.
 
 ## JSON format
 
-See the `examples` directory to learn more about the JSON format.
+The JSON file must be of type `Trip`. `Trip`'s schema is documented in `code/decls.d.ts`.
+The `examples` directory has examples in JSON.
