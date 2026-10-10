@@ -34,12 +34,9 @@
 {"state": "SC", "country": "USA", "tz": "US/Eastern"},
 {"state": "VT", "country": "USA", "tz": "US/Eastern"},
 {"state": "VA", "country": "USA", "tz": "US/Eastern"},
-{"state": "WA", "country": "USA", "tz": "US/Eastern"},
 {"state": "DC", "country": "USA", "tz": "US/Eastern"},
 {"state": "WV", "country": "USA", "tz": "US/Eastern"},
 
-{"state": "NV", "country": "USA", "tz": "US/Pacific"},
-{"state": "OR", "country": "USA", "tz": "US/Pacific"},
 {"state": "TX", "country": "USA", "tz": "US/Central"},
 {"state": "FL", "country": "USA", "tz": "US/Eastern"},
 {"state": "IN", "country": "USA", "tz": "US/Eastern"},
