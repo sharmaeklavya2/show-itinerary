@@ -246,6 +246,6 @@ function getTrackingUrls(trip: Trip): void {
 
 export default function processTrip(trip: Trip): void {
     processLocsInTrip(trip);
+    computeDurations(trip);  // validates `when`, so it must run before getTrackingUrls
     getTrackingUrls(trip);
-    computeDurations(trip);
 }
