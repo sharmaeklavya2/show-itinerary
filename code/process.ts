@@ -140,7 +140,7 @@ function processLoc(locTime: LocTime): void {
 
     let placeInfo;
     const parts = [locTime.city, locTime.state, locTime.country].filter(notUndef);
-    for(let i=0; i < parts.length; ++i) {
+    for(let i=0; i < parts.length && placeInfo === undefined; ++i) {
         const key = parts.slice(i, parts.length).join(', ');
         placeInfo = placeMap.get(key);
     }
@@ -172,7 +172,7 @@ function processLoc(locTime: LocTime): void {
         }
     }
 
-    // set loctype
+    // set locType
     if(airportInfo !== undefined) {
         locTime.locType = 'airport';
     }
