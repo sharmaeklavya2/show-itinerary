@@ -92,8 +92,15 @@ function timeToStr(t: Temporal.PlainTime): string {
     return hh + ':' + mm;
 }
 
-function locTimeDt(locTime: LocTime): Temporal.ZonedDateTime {
-    const zdt = strToZdt(locTime.when, locTime.timezone!);
+function locTimeDt(locTime: LocTime, label: string): Temporal.ZonedDateTime {
+    let zdt: Temporal.ZonedDateTime;
+    try {
+        zdt = strToZdt(locTime.when, locTime.timezone!);
+    }
+    catch(e) {
+        const msg = (e instanceof Error) ? e.message : String(e);
+        throw new Error(`${label}: ${msg}`, {cause: e});
+    }
     locTime.date = zdt.toPlainDate().toLocaleString('en-GB',
         {day: "numeric", month: "short", year: "numeric", weekday: "short"});
     locTime.time = timeToStr(zdt.toPlainTime());
@@ -106,15 +113,15 @@ function computeDurations(trip: Trip): void {
     let prevTo: LocTime | undefined = undefined;
     const origTrip = Array.from(trip);
     trip.length = 0;
-    for(const ride of origTrip) {
+    for(const [i, ride] of origTrip.entries()) {
         if(ride.from.timezone === undefined) {
             throw new Error('timezone missing in ' + JSON.stringify(ride.from));
         }
         if(ride.to.timezone === undefined) {
             throw new Error('timezone missing in ' + JSON.stringify(ride.to));
         }
-        const zdt1 = locTimeDt(ride.from);
-        const zdt2 = locTimeDt(ride.to);
+        const zdt1 = locTimeDt(ride.from, `trip[${i}].from`);
+        const zdt2 = locTimeDt(ride.to, `trip[${i}].to`);
         if(prevTo !== undefined && ride.type !== 'layover') {
             const layover: Ride = {'type': 'layover', 'from': prevTo, 'to': ride.from};
             const d = zdt1.since(prevEndZdt!);
