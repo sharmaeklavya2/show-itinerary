@@ -22,40 +22,59 @@ function getElem(tagName: string, options?: {parent?: Element, text?: string,
     return elem;
 }
 
-function renderLocTime(locTime: LocTime, parent: Element): Element {
-    const primary = locTime.where ?? locTime.airport ?? locTime.city;
-    if(primary === undefined) {
-        throw new Error('Missing place label.');
-    }
-    let secParts;
-    if(primary === locTime.airport) {
-        // secParts = [locTime.point, locTime.city, locTime.state, locTime.country].filter(notUndef);
-        secParts = [locTime.point, locTime.city];
-    }
-    else {
-        secParts = [locTime.point];
-        if(locTime.locType === 'city') {
-            if(primary !== locTime.city) {
-                secParts.push(locTime.city);
+interface ShownLevels {
+    // Which parts of a place to show in the location line.
+    city: boolean;
+    state: boolean;
+    country: boolean;
+}
+
+function getShownLevels(trip: Trip): ShownLevels {
+    // A level is shown if it varies across the trip, or if a higher level is shown.
+    // States are compared together with their country, and cities together with their state and country.
+    const countries = new Set<string>();
+    const states = new Set<string>();
+    const cities = new Set<string>();
+    for(const ride of trip) {
+        if(ride.type === 'layover') {
+            continue;
+        }
+        for(const locTime of [ride.from, ride.to]) {
+            if(locTime.country !== undefined) {
+                countries.add(locTime.country);
+            }
+            if(locTime.state !== undefined) {
+                states.add(JSON.stringify([locTime.country, locTime.state]));
+            }
+            if(locTime.city !== undefined) {
+                cities.add(JSON.stringify([locTime.country, locTime.state, locTime.city]));
             }
         }
-        else if(locTime.locType === 'state') {
-            secParts.push(locTime.city);
-            secParts.push(locTime.state);
-        }
-        else if(locTime.locType === 'country') {
-            secParts.push(locTime.city);
-            secParts.push(locTime.state);
-            secParts.push(locTime.country);
-        }
     }
-    const secParts2 = secParts.filter(x => x !== undefined);
-    const secondary = (secParts2.length > 0) ? secParts2.join(', ') : undefined;
+    const country = countries.size > 1;
+    const state = country || states.size > 1;
+    const city = state || cities.size > 1;
+    return {city, state, country};
+}
+
+function renderLocTime(locTime: LocTime, parent: Element, shownLevels: ShownLevels): Element {
+    const label = locTime.where ?? locTime.airport ?? locTime.city ?? locTime.state ?? locTime.country;
+    if(label === undefined) {
+        throw new Error('Missing place label.');
+    }
+    const locationParts = [
+        shownLevels.city ? locTime.city : undefined,
+        shownLevels.state ? locTime.state : undefined,
+        shownLevels.country ? locTime.country : undefined,
+    ].filter(x => x !== undefined && x !== label);
 
     const locElem = getElem('div', {parent: parent, classes: ['loctime']});
-    getElem('div', {parent: locElem, text: primary, classes: ['loctime-where']});
-    if(secondary !== undefined) {
-        getElem('div', {parent: locElem, text: secondary, classes: ['loctime-point']});
+    getElem('div', {parent: locElem, text: label, classes: ['loctime-label']});
+    if(locTime.point !== undefined) {
+        getElem('div', {parent: locElem, text: locTime.point, classes: ['loctime-point']});
+    }
+    if(locationParts.length > 0) {
+        getElem('div', {parent: locElem, text: locationParts.join(', '), classes: ['loctime-location']});
     }
     getElem('div', {parent: locElem, text: locTime.date, classes: ['loctime-date']});
     const timeElem = getElem('time', {parent: locElem, text: locTime.time, classes: ['loctime-time']});
@@ -70,6 +89,7 @@ const STD_RIDE_TYPES = new Set(['flight', 'bus', 'train', 'metro', 'car', 'taxi'
 
 export default function renderTrip(trip: Trip): Element {
     const tripElem = getElem('div', {classes: ['trip']});
+    const shownLevels = getShownLevels(trip);
     for(const ride of trip) {
         const isLayover = ride.type === 'layover';
         const rideClasses = isLayover ? ['layover'] : ['ride'];
@@ -108,12 +128,12 @@ export default function renderTrip(trip: Trip): Element {
 
         const body = getElem('div', {parent: rideElem, classes: ['ride-body']});
         if(!isLayover) {
-            const fromElem = renderLocTime(ride.from, body);
+            const fromElem = renderLocTime(ride.from, body, shownLevels);
             fromElem.classList.add('ride-from');
         }
         const durElem = getElem('div', {parent: body, text: ride.duration, classes: ['ride-dur']});
         if(!isLayover) {
-            const toElem = renderLocTime(ride.to, body);
+            const toElem = renderLocTime(ride.to, body, shownLevels);
             toElem.classList.add('ride-to');
         }
     }

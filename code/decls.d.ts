@@ -19,7 +19,6 @@ interface LocTime {
     point?: string;  // Airport terminal, bus stop name, or precise location in city.
     where?: string;  // Location name. Used to infer city, state, country, or airport if found in database.
     tzPlace?: string;  // [currently not implemented] Place to use to infer timezone. E.g., Lemont (a suburb of Chicago in Illinois, USA) is not in database, so it can't be used to detect timezone. Entering 'Chicago' here allows detecting timezone.
-    locType?: 'airport' | 'city' | 'state' | 'country';  // Location type.
 }
 
 interface Ride {

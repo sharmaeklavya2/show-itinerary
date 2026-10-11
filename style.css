@@ -218,13 +218,13 @@ main {
 }
 
 /* trip styling */
-.loctime-where, .loctime-point, .loctime-date, .loctime-time {
+.loctime-label, .loctime-point, .loctime-location, .loctime-date, .loctime-time {
     text-align: center;
 }
-.loctime-where {
+.loctime-label {
     font-size: 1.2em;
 }
-.loctime-point {
+.loctime-point, .loctime-location {
     font-size: 0.9em;
     color: var(--dim-color);
 }

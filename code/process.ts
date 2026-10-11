@@ -251,22 +251,7 @@ function processLoc(locTime: LocTime): void {
         }
     }
 
-    // set locType
-    if(airportInfo !== undefined) {
-        locTime.locType = 'airport';
-    }
-    else if(placeInfo !== undefined) {
-        if(placeInfo.city !== undefined) {
-            locTime.locType = 'city';
-        }
-        else if(placeInfo.state !== undefined) {
-            locTime.locType = 'state';
-        }
-        else {
-            locTime.locType = 'country';
-        }
-    }
-    else {
+    if([locTime.where, locTime.airport, locTime.city, locTime.state, locTime.country].every(x => x === undefined)) {
         throw new Error(`No place label for ${origLocTime}.`);
     }
 }
