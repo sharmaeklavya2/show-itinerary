@@ -51,28 +51,9 @@ interface PlaceInfo {
     tz: string;
 }
 
-declare module "airports.json" {
-    const airports: AirportInfo[];
-    export default airports;
-}
-
-declare module "places.json" {
-    const places: PlaceInfo[];
-    export default places;
-}
 interface RenameTable {
     // For each level, maps alternative names to the names used in the database.
     city?: Record<string, string>;
     state?: Record<string, string>;
     country?: Record<string, string>;
-}
-
-declare module "rename.json" {
-    const renames: RenameTable;
-    export default renames;
-}
-
-declare module "countries.json" {
-    const countries: PlaceInfo[];
-    export default countries;
 }

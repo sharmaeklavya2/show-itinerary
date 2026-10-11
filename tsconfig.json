@@ -3,7 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
+    "allowArbitraryExtensions": true,
 
     "rootDir": "code",
     "sourceMap": true,

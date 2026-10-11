@@ -1,7 +1,7 @@
-import airports from "airports.json" with { type: "json" };
-import places from "places.json" with { type: "json" };
-import countries from "countries.json" with { type: "json" };
-import renames from "rename.json" with { type: "json" };
+import airports from "../airports.json" with { type: "json" };
+import places from "../places.json" with { type: "json" };
+import countries from "../countries.json" with { type: "json" };
+import renames from "../rename.json" with { type: "json" };
 
 const iataToAirportInfo = new Map<string, AirportInfo>(airports.map(x => [x.iata, x]));
 
