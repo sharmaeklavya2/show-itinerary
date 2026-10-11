@@ -160,9 +160,11 @@ function main(): void {
     setupFileLoaders();
 }
 
-if(document.readyState === 'interactive') {
-    main();
+// This module can run after DOMContentLoaded (e.g., when a dependency awaits loading a polyfill),
+// so only wait for that event if the document is still loading.
+if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
 }
 else {
-    document.addEventListener('DOMContentLoaded', main);
+    main();
 }
