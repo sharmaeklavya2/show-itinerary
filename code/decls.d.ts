@@ -11,7 +11,7 @@ interface LocTime {
     stdTime?: string;  // [internal] Timezone-aware datetime in RFC 9557 (extension of ISO 8601). Inferred from `when` and `timezone`.
 
     // location
-    airport?: string;  // 3-letter IATA code. Is used to infer timezone and city.
+    airport?: string;  // 3-letter IATA code. Is used to infer timezone, city, and country.
     // `city`, `state`, and `country` are renamed using rename.json. E.g., 'Illinois' becomes 'IL'.
     city?: string;  // City name. Is used to infer timezone and country (and sometimes state) if the city is in database.
     state?: string;  // State code, like 'IL'. Can sometimes be used to infer timezone.

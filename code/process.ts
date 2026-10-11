@@ -201,6 +201,13 @@ function processLoc(locTime: LocTime): void {
         else if(locTime.city !== airportCity) {
             throw new Error(`city is ${locTime.city}, but airport ${locTime.airport} has city ${airportCity}.`);
         }
+        const airportCountry = rename('country', airportInfo.country);
+        if(locTime.country === undefined) {
+            locTime.country = airportCountry;
+        }
+        else if(locTime.country !== airportCountry) {
+            throw new Error(`country is ${locTime.country}, but airport ${locTime.airport} has country ${airportCountry}.`);
+        }
     }
 
     let placeInfo;
