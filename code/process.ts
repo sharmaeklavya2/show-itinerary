@@ -1,3 +1,4 @@
+import "./polyfills.js";
 import airports from "../airports.json" with { type: "json" };
 import places from "../places.json" with { type: "json" };
 import countries from "../countries.json" with { type: "json" };

@@ -9,6 +9,9 @@
   },
   "author": "Eklavya Sharma",
   "license": "MIT",
+  "dependencies": {
+    "temporal-polyfill": "^1.0.5"
+  },
   "devDependencies": {
     "typescript": "7.x"
   }
