@@ -37,7 +37,8 @@ The exit status is 0 on success, 2 for invalid arguments, and 1 for other errors
 
 To run it as `show-itinerary INPUT OUTPUT` instead, run `npm link` in this repository.
 
-The command-line interface requires a Node.js version that supports `Map.prototype.getOrInsert` (Node.js 26 or later).
+The command-line interface works on older Node.js versions too (tested with Node.js 22):
+`Map.prototype.getOrInsert` is polyfilled if missing.
 If Node.js doesn't support Temporal (e.g., Homebrew's build of Node.js 26),
 the [`temporal-polyfill`](https://github.com/fullcalendar/temporal-polyfill) package is used instead.
 

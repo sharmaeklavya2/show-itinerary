@@ -1,5 +1,21 @@
 // Polyfills for JS features that some supported environments lack.
 
+// Map.prototype.getOrInsert is missing in older Node.js versions (e.g., Node.js 22) and older browsers.
+// It is small, so it is defined here instead of being loaded from a package.
+if(typeof Map.prototype.getOrInsert !== 'function') {
+    Object.defineProperty(Map.prototype, 'getOrInsert', {
+        value: function<K, V>(this: Map<K, V>, key: K, value: V): V {
+            if(!this.has(key)) {
+                this.set(key, value);
+            }
+            return this.get(key)!;
+        },
+        writable: true,
+        enumerable: false,
+        configurable: true,
+    });
+}
+
 // Temporal is missing in some environments, e.g., Homebrew's Node.js 26 and older browsers.
 // The polyfill is only loaded when Temporal is missing.
 // In Node.js, it is loaded from the temporal-polyfill package in node_modules.
