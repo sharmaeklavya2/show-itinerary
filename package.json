@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Show Itinerary",
   "type": "module",
+  "bin": {
+    "show-itinerary": "code/cli.js"
+  },
   "scripts": {
     "build": "tsc && python makeDbs.py",
     "clean": "rm -f code/*.js code/*.js.map"
