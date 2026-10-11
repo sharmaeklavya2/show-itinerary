@@ -4,12 +4,12 @@
   "description": "Show Itinerary",
   "type": "module",
   "scripts": {
-    "build": "npx tsc && python makeDbs.py",
+    "build": "tsc && python makeDbs.py",
     "clean": "rm -f code/*.js code/*.js.map"
   },
   "author": "Eklavya Sharma",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "typescript": "7.x"
   }
 }
