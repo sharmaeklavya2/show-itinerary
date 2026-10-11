@@ -9,8 +9,8 @@ __pycache__
 /output
 /deploy
 /cache
-airports.json
-airlines.json
+/data/airports.json
+/data/airlines.json
 .env
 .npmrc
 

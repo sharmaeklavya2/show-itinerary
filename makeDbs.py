@@ -13,6 +13,7 @@ FETCH = {
 }
 ROOT_DIR = dirname(abspath(__file__))
 CACHE_DIR = pjoin(ROOT_DIR, 'cache')
+DATA_DIR = pjoin(ROOT_DIR, 'data')
 
 
 def fetch() -> None:
@@ -31,7 +32,7 @@ def fetch() -> None:
 
 def rewriteAirports() -> None:
     parts = []
-    print('rewriting to airports.json')
+    print('rewriting to data/airports.json')
     with open(pjoin(CACHE_DIR, 'airports.dat'), newline='') as ifp:
         reader = csv.reader(ifp)
         for row in reader:
@@ -45,7 +46,7 @@ def rewriteAirports() -> None:
             }
             if obj['iata'] != '\\N' and obj['icao'] != '\\N' and obj['tz'] != '\\N':
                 parts.append(json.dumps(obj, ensure_ascii=False))
-    with open(pjoin(ROOT_DIR, 'airports.json'), 'w') as ofp:
+    with open(pjoin(DATA_DIR, 'airports.json'), 'w') as ofp:
         ofp.write('[\n')
         ofp.write(',\n'.join(parts))
         ofp.write('\n]\n')
@@ -53,7 +54,7 @@ def rewriteAirports() -> None:
 
 def rewriteAirlines() -> None:
     parts = []
-    print('rewriting to airlines.json')
+    print('rewriting to data/airlines.json')
     with open(pjoin(CACHE_DIR, 'airlines.dat'), newline='') as ifp:
         reader = csv.reader(ifp)
         for row in reader:
@@ -66,7 +67,7 @@ def rewriteAirlines() -> None:
             if obj['iata'] != '\\N' and obj['iata'] != '-' and obj['active'] == 'Y':
                 del obj['active']
                 parts.append(json.dumps(obj))
-    with open(pjoin(ROOT_DIR, 'airlines.json'), 'w') as ofp:
+    with open(pjoin(DATA_DIR, 'airlines.json'), 'w') as ofp:
         ofp.write('[\n')
         ofp.write(',\n'.join(parts))
         ofp.write('\n]\n')
