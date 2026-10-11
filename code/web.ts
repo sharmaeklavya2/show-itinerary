@@ -1,5 +1,5 @@
 import processTrip from "./process.js";
-import renderTrip from "./render.js";
+import renderTrip, { type ElemNode } from "./render.js";
 
 //=[ Error reporting ]==========================================================
 
@@ -47,6 +47,23 @@ function logError(e: unknown): void {
 
 //=[ Conversion to DOM ]========================================================
 
+function toDom(node: ElemNode): HTMLElement {
+    const elem = document.createElement(node.tag);
+    if(node.text !== undefined) {
+        elem.textContent = node.text;
+    }
+    for(const [k, v] of Object.entries(node.attrs)) {
+        elem.setAttribute(k, v);
+    }
+    if(node.classes.length > 0) {  // classList.add() with no arguments would add an empty class attribute
+        elem.classList.add(...node.classes);
+    }
+    for(const child of node.children) {
+        elem.appendChild(toDom(child));
+    }
+    return elem;
+}
+
 function displayTrip(trip: Trip): void {
     const mainElem = document.getElementById('main')!;
     const dropTargetElem = document.getElementById('drop-target')!;
@@ -61,8 +78,7 @@ function displayTrip(trip: Trip): void {
 
     processTrip(trip);
     ppJsonElem.textContent = JSON.stringify(trip, undefined, 2);
-    const tripElem = renderTrip(trip);
-    mainElem.replaceChildren(tripElem);
+    mainElem.replaceChildren(toDom(renderTrip(trip)));
 }
 
 //=[ File IO ]==================================================================

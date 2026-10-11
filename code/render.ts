@@ -1,24 +1,23 @@
-function getElem(tagName: string, options?: {parent?: Element, text?: string,
-        attrs?: Record<string, string>, classes?: string[]}): Element {
-    const elem = document.createElement(tagName);
-    if(options !== undefined) {
-        if(options.text !== undefined) {
-            elem.textContent = options.text;
-        }
-        if(options.attrs !== undefined) {
-            for(const [k, v] of Object.entries(options.attrs)) {
-                elem.setAttribute(k, v);
-            }
-        }
-        if(options.classes !== undefined) {
-            for(const c of options.classes) {
-                elem.classList.add(c);
-            }
-        }
-        if(options.parent !== undefined) {
-            options.parent.appendChild(elem);
-        }
-    }
+export interface ElemNode {
+    // A plain-object description of an HTML element.
+    // It doesn't depend on the DOM, so it can be converted to DOM nodes in a browser or to an HTML string elsewhere.
+    tag: string;
+    attrs: Record<string, string>;
+    classes: string[];
+    text?: string;  // Text content. Comes before children.
+    children: ElemNode[];
+}
+
+function getElem(tag: string, options?: {parent?: ElemNode, text?: string,
+        attrs?: Record<string, string>, classes?: string[]}): ElemNode {
+    const elem: ElemNode = {
+        tag: tag,
+        attrs: {...options?.attrs},
+        classes: [...(options?.classes ?? [])],
+        text: options?.text,
+        children: [],
+    };
+    options?.parent?.children.push(elem);
     return elem;
 }
 
@@ -57,7 +56,7 @@ function getShownLevels(trip: Trip): ShownLevels {
     return {city, state, country};
 }
 
-function renderLocTime(locTime: LocTime, parent: Element, shownLevels: ShownLevels): Element {
+function renderLocTime(locTime: LocTime, parent: ElemNode, shownLevels: ShownLevels): ElemNode {
     const label = locTime.where ?? locTime.airport ?? locTime.city ?? locTime.state ?? locTime.country;
     if(label === undefined) {
         throw new Error('Missing place label.');
@@ -79,15 +78,15 @@ function renderLocTime(locTime: LocTime, parent: Element, shownLevels: ShownLeve
     getElem('div', {parent: locElem, text: locTime.date, classes: ['loctime-date']});
     const timeElem = getElem('time', {parent: locElem, text: locTime.time, classes: ['loctime-time']});
     if(locTime.stdTime !== undefined) {
-        timeElem.setAttribute('datetime', locTime.stdTime);
-        timeElem.setAttribute('title', locTime.stdTime);
+        timeElem.attrs['datetime'] = locTime.stdTime;
+        timeElem.attrs['title'] = locTime.stdTime;
     }
     return locElem;
 }
 
 const STD_RIDE_TYPES = new Set(['flight', 'bus', 'train', 'metro', 'car', 'taxi']);
 
-export default function renderTrip(trip: Trip): Element {
+export default function renderTrip(trip: Trip): ElemNode {
     const tripElem = getElem('div', {classes: ['trip']});
     const shownLevels = getShownLevels(trip);
     for(const ride of trip) {
@@ -129,12 +128,12 @@ export default function renderTrip(trip: Trip): Element {
         const body = getElem('div', {parent: rideElem, classes: ['ride-body']});
         if(!isLayover) {
             const fromElem = renderLocTime(ride.from, body, shownLevels);
-            fromElem.classList.add('ride-from');
+            fromElem.classes.push('ride-from');
         }
-        const durElem = getElem('div', {parent: body, text: ride.duration, classes: ['ride-dur']});
+        getElem('div', {parent: body, text: ride.duration, classes: ['ride-dur']});
         if(!isLayover) {
             const toElem = renderLocTime(ride.to, body, shownLevels);
-            toElem.classList.add('ride-to');
+            toElem.classes.push('ride-to');
         }
     }
     return tripElem;
