@@ -1,6 +1,7 @@
 import airports from "airports.json" with { type: "json" };
 import places from "places.json" with { type: "json" };
 import countries from "countries.json" with { type: "json" };
+import renames from "rename.json" with { type: "json" };
 
 const iataToAirportInfo = new Map<string, AirportInfo>(airports.map(x => [x.iata, x]));
 
@@ -35,6 +36,28 @@ function fillPlaceMap(): void {
     }
 }
 fillPlaceMap();
+
+const PLACE_LEVELS = ['city', 'state', 'country'] as const;
+type PlaceLevel = typeof PLACE_LEVELS[number];
+
+function makeRenameMaps(): Record<PlaceLevel, Map<string, string>> {
+    const renameMaps = {} as Record<PlaceLevel, Map<string, string>>;
+    for(const level of PLACE_LEVELS) {
+        const levelMap = new Map<string, string>(Object.entries(renames[level] ?? {}));
+        for(const [oldName, newName] of levelMap) {
+            if(levelMap.has(newName)) {
+                throw new Error(`rename.json: ${level} ${oldName} is renamed to ${newName}, which is itself renamed.`);
+            }
+        }
+        renameMaps[level] = levelMap;
+    }
+    return renameMaps;
+}
+const renameMaps = makeRenameMaps();
+
+function rename(level: PlaceLevel, name: string): string {
+    return renameMaps[level].get(name) ?? name;
+}
 
 const WHEN_REGEX = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})$/;
 
@@ -153,6 +176,13 @@ function processLoc(locTime: LocTime): void {
      */
     const origLocTime = JSON.stringify(locTime);
 
+    for(const level of PLACE_LEVELS) {
+        const name = locTime[level];
+        if(name !== undefined) {
+            locTime[level] = rename(level, name);
+        }
+    }
+
     let airportInfo;
     if(locTime.airport !== undefined) {
         airportInfo = iataToAirportInfo.get(locTime.airport);
@@ -164,11 +194,12 @@ function processLoc(locTime: LocTime): void {
         }
     }
     if(airportInfo !== undefined) {
+        const airportCity = rename('city', airportInfo.city);
         if(locTime.city === undefined) {
-            locTime.city = airportInfo.city;
+            locTime.city = airportCity;
         }
-        else if(locTime.city !== airportInfo.city) {
-            throw new Error(`city is ${locTime.city}, but airport ${locTime.airport} has city ${airportInfo.city}.`);
+        else if(locTime.city !== airportCity) {
+            throw new Error(`city is ${locTime.city}, but airport ${locTime.airport} has city ${airportCity}.`);
         }
     }
 
@@ -179,7 +210,14 @@ function processLoc(locTime: LocTime): void {
         placeInfo = placeMap.get(key);
     }
     if(placeInfo === undefined && locTime.where !== undefined) {
-        placeInfo = placeMap.get(locTime.where);
+        // `where` can be a city, state, or country, so try renaming it as each of these.
+        const where = locTime.where;
+        for(const level of PLACE_LEVELS) {
+            placeInfo = placeMap.get(rename(level, where));
+            if(placeInfo !== undefined) {
+                break;
+            }
+        }
     }
     if(placeInfo !== undefined) {
         if(placeInfo.city !== undefined && locTime.city === undefined) {

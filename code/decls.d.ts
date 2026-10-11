@@ -12,11 +12,12 @@ interface LocTime {
 
     // location
     airport?: string;  // 3-letter IATA code. Is used to infer timezone and city.
+    // `city`, `state`, and `country` are renamed using rename.json. E.g., 'Illinois' becomes 'IL'.
     city?: string;  // City name. Is used to infer timezone and country (and sometimes state) if the city is in database.
-    state?: string;  // 2-letter state code. Can sometimes be used to infer timezone.
-    country?: string;  // Country name. Can often be used to infer timezone.
+    state?: string;  // State code, like 'IL'. Can sometimes be used to infer timezone.
+    country?: string;  // Country name, like 'USA'. Can often be used to infer timezone.
     point?: string;  // Airport terminal, bus stop name, or precise location in city.
-    where?: string;  // Location name. Can be used instead of city, state, country, or airport if type can be detected.
+    where?: string;  // Location name. Used to infer city, state, country, or airport if found in database.
     tzPlace?: string;  // [currently not implemented] Place to use to infer timezone. E.g., Lemont (a suburb of Chicago in Illinois, USA) is not in database, so it can't be used to detect timezone. Entering 'Chicago' here allows detecting timezone.
     locType?: 'airport' | 'city' | 'state' | 'country';  // Location type.
 }
@@ -60,6 +61,18 @@ declare module "places.json" {
     const places: PlaceInfo[];
     export default places;
 }
+interface RenameTable {
+    // For each level, maps alternative names to the names used in the database.
+    city?: Record<string, string>;
+    state?: Record<string, string>;
+    country?: Record<string, string>;
+}
+
+declare module "rename.json" {
+    const renames: RenameTable;
+    export default renames;
+}
+
 declare module "countries.json" {
     const countries: PlaceInfo[];
     export default countries;
