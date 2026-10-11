@@ -76,6 +76,9 @@ function strToZdt(s: string, tz: string): Temporal.ZonedDateTime {
         pdt = Temporal.PlainDateTime.from({year, month, day, hour, minute}, {'overflow': 'reject'});
     }
     catch(e) {
+        if(!(e instanceof RangeError)) {
+            throw e;  // e.g., ReferenceError if Temporal is missing
+        }
         throw new Error(`"${s}" is not a valid date and time.`, {cause: e});
     }
     let zdt: Temporal.ZonedDateTime;
@@ -83,6 +86,9 @@ function strToZdt(s: string, tz: string): Temporal.ZonedDateTime {
         zdt = pdt.toZonedDateTime(tz, {'disambiguation': 'earlier'});
     }
     catch(e) {
+        if(!(e instanceof RangeError)) {
+            throw e;
+        }
         throw new Error(`"${tz}" is not a valid IANA timezone.`, {cause: e});
     }
     if(!zdt.toPlainDateTime().equals(pdt)) {
